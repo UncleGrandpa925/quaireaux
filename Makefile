@@ -1,3 +1,6 @@
+SHELL := /bin/bash
+PATH := $(PATH):~/cairo/target/release
+
 .PHONY: default
 
 # Configuration
