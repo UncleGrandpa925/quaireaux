@@ -52,6 +52,11 @@ test-stack:
 	@echo "Testing stack..."
 	cairo-test -p $(TEST_ENTRYPOINT) -f stack
 
+# Run tests related to the stack
+test-deque:
+	@echo "Testing deque..."
+	cairo-test -p $(TEST_ENTRYPOINT) -f deque_test
+
 # FORCE is a special target that is always out of date
 # It enable to force a target to be executed
 FORCE:

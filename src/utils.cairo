@@ -46,13 +46,13 @@ fn unsafe_euclidean_div(a: felt, b: felt) -> (felt, felt) {
     ((a_u128 / b_u128).into(), (a_u128 % b_u128).into())
 }
 
-fn max(a: felt, b: felt) -> felt {
-    if a > b {
-        return a;
-    } else {
-        return b;
-    }
-}
+// fn max(a: felt, b: felt) -> felt {
+//     if a > b {
+//         return a;
+//     } else {
+//         return b;
+//     }
+// }
 
 // Function to count the number of digits in a number.
 /// # Arguments
@@ -224,6 +224,36 @@ fn is_equal(ref a: Array::<u32>, ref b: Array::<u32>, index: u32) -> bool {
     is_equal(ref a, ref b, index + 1_u32)
 }
 
+fn is_equal_u256(ref a: Array::<u256>, ref b: Array::<u256>, index: usize) -> bool {
+    // Check if out of gas.
+    // TODO: Remove when automatically handled by compiler.
+    match gas::get_gas() {
+        Option::Some(_) => {},
+        Option::None(_) => {
+            let mut data = ArrayTrait::new();
+            data.append('OOG');
+            panic(data);
+        }
+    }
+
+    let len = a.len();
+    if len != b.len() {
+        return false;
+    }
+    let mut i = 0_usize;
+    if index == len {
+        return true;
+    }
+
+    let a_element = a.at(index);
+    let b_element = b.at(index);
+    if *a_element != *b_element {
+        return false;
+    }
+
+    is_equal_u256(ref a, ref b, index + 1_usize)
+}
+
 /// Returns the slice of an array.
 /// * `arr` - The array to slice.
 /// * `begin` - The index to start the slice at.
@@ -234,4 +264,10 @@ fn array_slice(src: @Array::<u256>, begin: usize, end: usize) -> Array::<u256> {
     let mut slice = ArrayTrait::<u256>::new();
     fill_array_256(ref dst: slice, :src, index: begin, count: end);
     slice
+}
+
+fn array_clone(src: @Array::<u256>) -> Array::<u256> {
+    let mut clone = ArrayTrait::<u256>::new();
+    fill_array_256(ref dst: clone, :src, index: 0_usize, count: src.len());
+    clone
 }
